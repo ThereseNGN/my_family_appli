@@ -13,10 +13,10 @@ const TodoItem = sequelize.define('TodoItem', {
   },
   description: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   deadline: {
-    type: DataTypes.DATE,
+    type: DataTypes.DATEONLY,
     allowNull: true,
   },
   priorite: {

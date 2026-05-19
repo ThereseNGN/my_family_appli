@@ -1,6 +1,7 @@
 const { Family, User, TodoList, ShoppingList } = require('../models');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (currentRequest, currentResponse) => {
   // 1. Récupération des erreurs d'Express-Validator
@@ -23,7 +24,7 @@ exports.registerUser = async (currentRequest, currentResponse) => {
 
     let targetFamilyId = familyId;
 
-    // 4. Création ou Liaison de Famille
+    // 4. Création ou Rejoindre la Famille
     if (!targetFamilyId) {
       // CAS 1 : Premier membre, on crée la famille et SES listes uniques
       const newFamily = await Family.create({ nom: nom });
@@ -63,5 +64,57 @@ exports.registerUser = async (currentRequest, currentResponse) => {
   } catch (error) {
     console.error(error);
     return currentResponse.status(500).json({ message: "Erreur lors de l'inscription.", error: error.message });
+  }
+};
+
+exports.loginUser = async (currentRequest, currentResponse) => {
+  try {
+    const { email, password } = currentRequest.body;
+
+    // 1. Vérification de la présence des champs
+    if (!email || !password) {
+      return currentResponse.status(400).json({ message: "Email et mot de passe requis." });
+    }
+
+    // 2. Recherche de l'utilisateur par son email
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      // Message générique par sécurité (on ne dit pas si c'est l'email ou le mdp qui est faux)
+      return currentResponse.status(401).json({ message: "Identifiants incorrects." });
+    }
+
+    // 3. Comparaison du mot de passe en clair avec le hash en BDD
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return currentResponse.status(401).json({ message: "Identifiants incorrects." });
+    }
+
+    // 4. Génération du Token JWT
+    // On y stocke l'ID de l'utilisateur et son ID de famille (très utile pour la suite)
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        role: user.role,
+        familyId: user.familyId 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' } // Le token expire dans 24 heures
+    );
+
+    // 5. Réponse de succès
+    return currentResponse.status(200).json({
+      message: "Connexion réussie.",
+      token: token,
+      user: {
+        id: user.id,
+        prenom: user.prenom,
+        role: user.role,
+        familyId: user.familyId
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    return currentResponse.status(500).json({ message: "Erreur serveur lors de la connexion." });
   }
 };
