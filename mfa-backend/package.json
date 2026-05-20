@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cross-env NODE_ENV=test jest --verbose --detectOpenHandles --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +17,10 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.3",
     "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
   }
 }

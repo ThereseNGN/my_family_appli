@@ -1,16 +1,6 @@
-const express = require('express');
+const app = require('./app');
 const { sequelize } = require('./models'); // Importe la BDD et les modèles associés
-const authRoutes = require('./routes/authRoutes'); // Importe les routes
-const userRoutes = require('./routes/userRoutes');
-const todoRoutes = require('./routes/todoRoutes');
 require('dotenv').config();
-
-const app = express();
-app.use(express.json());
-
-app.use('/api/auth', authRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/todos', todoRoutes);
 
 const PORT = process.env.PORT || 5000;
 
