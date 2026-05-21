@@ -1,4 +1,4 @@
-const { Family, User, TodoList, ShoppingList } = require('../models');
+const { Family, User, TodoList, ShoppingList, Calendar } = require('../models');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -29,9 +29,10 @@ exports.registerUser = async (currentRequest, currentResponse) => {
       // CAS 1 : Premier membre, on crée la famille et SES listes uniques
       const newFamily = await Family.create({ nom: nom });
       targetFamilyId = newFamily.id;
-      // 4b. Création AUTOMATIQUE de sa TodoList et ShoppingList (Contrainte 1-1)
+      // 4b. Création AUTOMATIQUE de sa TodoList, sa ShoppingList et son Calendar (Contrainte 1-1)
       await TodoList.create({ familyId: targetFamilyId, nom: `To-do List de la famille ${nom}` });
       await ShoppingList.create({ familyId: targetFamilyId, nom: `Liste de courses de la famille ${nom}` });
+      await Calendar.create({ familyId: targetFamilyId, nom: `Calendrier de la famille ${nom}` });
     } else {
       // CAS 2 : Le membre rejoint, on vérifie que la famille existe
       const existingFamily = await Family.findByPk(targetFamilyId);
