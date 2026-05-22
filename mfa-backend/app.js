@@ -3,8 +3,8 @@ const cors = require('cors');
 const { sequelize } = require('./models'); // Importe la BDD et les modèles associés
 const authRoutes = require('./routes/authRoutes'); // Importe les routes
 const userRoutes = require('./routes/userRoutes');
-const todoRoutes = require('./routes/todoRoutes');
-const shoppingRoutes = require('./routes/shoppingRoutes');
+const itemRoutes = require('./routes/itemRoutes');
+const articleRoutes = require('./routes/articleRoutes');
 const eventRoutes = require('./routes/eventRoutes')
 require('dotenv').config();
 
@@ -18,8 +18,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
-app.use('/api/todos', todoRoutes);
-app.use('/api/shopping', shoppingRoutes);
-app.use('/api/event', eventRoutes);
+app.use('/api/items', itemRoutes);
+app.use('/api/articles', articleRoutes);
+app.use('/api/events', eventRoutes);
 
 module.exports = app;

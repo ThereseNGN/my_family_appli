@@ -1,9 +1,9 @@
-const shoppingRepository = require('../repositories/shoppingRepository');
+const articleRepository = require('../repositories/articleRepository');
 
 exports.getShoppingList = async (req, res) => {
   try {
     // req.user.familyId provient de notre middleware d'authentification !
-    const shoppingList = await shoppingRepository.findShoppingListByFamilyId(req.user.familyId);
+    const shoppingList = await articleRepository.findShoppingListByFamilyId(req.user.familyId);
     if (!shoppingList) {
       return res.status(404).json({ message: "Aucune liste trouvée pour cette famille." });
     }
@@ -17,7 +17,7 @@ exports.getShoppingList = async (req, res) => {
 exports.createShoppingArticle = async (req, res) => {
   try {
     // On crée l'article en le liant à la liste trouvée
-    const newArticle = await shoppingRepository.createArticle(
+    const newArticle = await articleRepository.createArticle(
       req.user.familyId,
       req.user.userId,   // On trace qui a créé l'article
       req.body
@@ -35,20 +35,20 @@ exports.createShoppingArticle = async (req, res) => {
 
 exports.updateShoppingArticle = async (req, res) => {
   try {
-    const Article = await shoppingRepository.getArticleByIdAndFamilyId(
+    const article = await articleRepository.getArticleByIdAndFamilyId(
     req.params.id,
     req.user.familyId
     );
-    if (!Article) {
+    if (!article) {
       return res.status(404).json({ message: "Article introuvable ou non autorisé pour votre famille." });
     }
 
-    const updatedArticle = await shoppingRepository.updateArticle(
-      Article,
+    const updatedArticle = await articleRepository.updateArticle(
+      article,
       req.body
     );
 
-    res.status(200).json({ message: "Article mis à jour avec succès.", Article: updatedArticle });
+    res.status(200).json({ message: "Article mis à jour avec succès.", article: updatedArticle });
   } catch (error) {
     console.error(error);
     // Erreur validation client
@@ -65,15 +65,15 @@ exports.updateShoppingArticle = async (req, res) => {
 
 exports.deleteShoppingArticle = async (req, res) => {
   try {
-    const Article = await shoppingRepository.getArticleByIdAndFamilyId(
+    const article = await articleRepository.getArticleByIdAndFamilyId(
     req.params.id,
     req.user.familyId
     );
-    if (!Article) {
+    if (!article) {
       return res.status(404).json({ message: "Article introuvable ou non autorisé pour votre famille." });
     }
 
-    await shoppingRepository.deleteArticle(Article);
+    await articleRepository.deleteArticle(article);
 
     res.status(200).json({ message: "Article supprimé avec succès." });
   } catch (error) {

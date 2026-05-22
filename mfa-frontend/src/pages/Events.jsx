@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 
-const Event = () => {
+const Events = () => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
     // Dès que le composant est chargé, on appelle le back-end
-    api.get('/event')
+    api.get('/events')
       .then(res => setEvents(res.data.Events))
       .catch(err => console.error("Erreur chargement:", err));
   }, []);
@@ -56,4 +56,4 @@ const Event = () => {
   );
 };
 
-export default Event;
+export default Events;

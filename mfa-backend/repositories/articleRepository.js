@@ -30,7 +30,7 @@ exports.getArticleByIdAndFamilyId = async (id, familyId) => {
   });
 }
 
-exports.updateArticle = async (Article, data) => {
+exports.updateArticle = async (article, data) => {
   const allowedFields = [
    'nom',
    'statut'
@@ -53,13 +53,13 @@ exports.updateArticle = async (Article, data) => {
     // 2. Mise à jour des champs s'ils sont fournis dans la requête
   allowedFields.forEach(field => {
    if (data[field] !== undefined) {
-      Article[field] = data[field];
+      article[field] = data[field];
    }
 });
-  return await Article.save();
+  return await article.save();
 }
 
-exports.deleteArticle = async (Article) => {
+exports.deleteArticle = async (article) => {
   // Suppression définitive de la ligne en BDD
-  return await Article.destroy();
+  return await article.destroy();
 }

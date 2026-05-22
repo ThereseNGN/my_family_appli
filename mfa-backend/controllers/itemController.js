@@ -1,9 +1,9 @@
-const todoRepository = require('../repositories/todoRepository');
+const itemRepository = require('../repositories/itemRepository');
 
 exports.getTodoList = async (req, res) => {
   try {
     // req.user.familyId provient de notre middleware d'authentification !
-    const todoList = await todoRepository.findTodoListByFamilyId(req.user.familyId);
+    const todoList = await itemRepository.findTodoListByFamilyId(req.user.familyId);
     if (!todoList) {
       return res.status(404).json({ message: "Aucune liste trouvée pour cette famille." });
     }
@@ -17,7 +17,7 @@ exports.getTodoList = async (req, res) => {
 exports.createTodoItem = async (req, res) => {
   try {
     // On crée l'item en le liant à la liste trouvée
-    const newItem = await todoRepository.createItem(
+    const newItem = await itemRepository.createItem(
       req.user.familyId,
       req.user.userId,   // On trace qui a créé la tâche
       req.body
@@ -35,7 +35,7 @@ exports.createTodoItem = async (req, res) => {
 
 exports.updateTodoItem = async (req, res) => {
   try {
-    const todoItem = await todoRepository.getItemByIdAndFamilyId(
+    const todoItem = await itemRepository.getItemByIdAndFamilyId(
     req.params.id,
     req.user.familyId
     );
@@ -43,7 +43,7 @@ exports.updateTodoItem = async (req, res) => {
       return res.status(404).json({ message: "Tâche introuvable ou non autorisée pour votre famille." });
     }
 
-    const updatedItem = await todoRepository.updateItem(
+    const updatedItem = await itemRepository.updateItem(
       todoItem,
       req.body
     );
@@ -65,7 +65,7 @@ exports.updateTodoItem = async (req, res) => {
 
 exports.deleteTodoItem = async (req, res) => {
   try {
-    const todoItem = await todoRepository.getItemByIdAndFamilyId(
+    const todoItem = await itemRepository.getItemByIdAndFamilyId(
     req.params.id,
     req.user.familyId
     );
@@ -73,7 +73,7 @@ exports.deleteTodoItem = async (req, res) => {
       return res.status(404).json({ message: "Tâche introuvable ou non autorisée pour votre famille." });
     }
 
-    await todoRepository.deleteItem(todoItem);
+    await itemRepository.deleteItem(todoItem);
 
     res.status(200).json({ message: "Tâche supprimée avec succès." });
   } catch (error) {

@@ -30,7 +30,7 @@ exports.getEventByIdAndFamilyId = async (id, familyId) => {
   });
 }
 
-exports.updateEvent = async (Event, data) => {
+exports.updateEvent = async (event, data) => {
   const allowedFields = [
    'intitule',
    'description',
@@ -56,13 +56,13 @@ exports.updateEvent = async (Event, data) => {
     // 2. Mise à jour des champs s'ils sont fournis dans la requête
   allowedFields.forEach(field => {
    if (data[field] !== undefined) {
-      Event[field] = data[field];
+      event[field] = data[field];
    }
 });
-  return await Event.save();
+  return await event.save();
 }
 
-exports.deleteEvent = async (Event) => {
+exports.deleteEvent = async (event) => {
   // Suppression définitive de la ligne en BDD
-  return await Event.destroy();
+  return await event.destroy();
 }

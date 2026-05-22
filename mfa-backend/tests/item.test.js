@@ -35,7 +35,7 @@ afterAll(async () => {
 describe('API To-do List (Sécurisée)', () => {
 
   it('Devrait refuser l\'accès à la todo list si le Token est absent', async () => {
-    const res = await request(app).get('/api/todos');
+    const res = await request(app).get('/api/items');
     
     expect(res.statusCode).toEqual(401);
     expect(res.body).toHaveProperty('message', 'Accès refusé : Aucun token fourni.');
@@ -43,7 +43,7 @@ describe('API To-do List (Sécurisée)', () => {
 
   it('Devrait autoriser l\'accès et renvoyer la liste (vide au départ) avec un Token valide', async () => {
     const res = await request(app)
-      .get('/api/todos')
+      .get('/api/items')
       .set('Authorization', `Bearer ${authToken}`); // Injection du Token dans le Header
 
     expect(res.statusCode).toEqual(200);
@@ -53,7 +53,7 @@ describe('API To-do List (Sécurisée)', () => {
 
   it('Devrait permettre à l\'utilisateur de créer une tâche', async () => {
     const res = await request(app)
-      .post('/api/todos')
+      .post('/api/items')
       .set('Authorization', `Bearer ${authToken}`)
       .send({
         intitule: 'Réserver billets de train',
