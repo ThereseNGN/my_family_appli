@@ -18,7 +18,7 @@ const Todos = () => {
         {tasks.map(task => (
           <li key={task.id} className="list-group-item d-flex justify-content-between">
             {task.intitule}
-            <span className={`badge ${task.statut === 'termine' ? 'bg-success' : 'bg-warning'}`}>
+            <span className={`badge ${task.statut === 'termine' ? 'bg-success' : 'bg-warning text-dark'}`}>
               {task.statut}
             </span>
           </li>

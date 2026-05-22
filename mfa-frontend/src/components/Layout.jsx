@@ -17,7 +17,7 @@ const Layout = () => {
       </nav>
       
       <main className="container mt-4">
-        {/* L'Outlet = afficher la page enfant (Todos, Shopping, etc.) */}
+        {/* Outlet = afficher la page enfant (Todos, Shopping, etc.) */}
         <Outlet />
       </main>
       
@@ -25,7 +25,7 @@ const Layout = () => {
       <footer className="fixed-bottom bg-light p-2 border-top text-center">
         <button className="btn btn-link" onClick={() => navigate('/todos')}>Todo List</button>
         <button className="btn btn-link" onClick={() => navigate('/shopping')}>Courses</button>
-        <button className="btn btn-link" onClick={() => navigate('/calendar')}>Calendrier</button>
+        <button className="btn btn-link" onClick={() => navigate('/event')}>Calendrier</button>
       </footer>
     </div>
   );

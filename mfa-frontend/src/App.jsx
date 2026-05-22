@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import PrivateRoute from './components/PrivateRoute';
 import Login from './pages/Login';
 import Todos from './pages/Todos';
+import Event from './pages/Event';
+import Article from './pages/Shopping';
 import Layout from './components/Layout';
-
 
 function App() {
   return (
@@ -16,10 +17,10 @@ function App() {
           {/* Toutes les routes protégées par PrivateRoute seront des enfants du Layout */}
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Layout />}>
-              <Route index element={<h2>Bienvenue sur votre Dashboard</h2>} />
-              <Route path="/todos" element={<Todos />}></Route>
-              <Route path="shopping" element={<h2>Page Courses (À coder)</h2>} />
-              <Route path="calendar" element={<h2>Page Calendrier (À coder)</h2>} />
+              <Route index element={<Navigate to="/todos" />} />
+              <Route path="todos" element={<Todos />} />
+              <Route path="shopping" element={<Article />} />
+              <Route path="event" element={<Event />} />
             </Route>
           </Route>
         </Routes>
