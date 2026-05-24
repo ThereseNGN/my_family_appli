@@ -5,10 +5,10 @@ const Articles = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);  
 
-  // Nouvel état pour le formulaire d'ajout
+  // états pour le formulaire de création
   const [nomNouvelArticle, setNomNouvelArticle] = useState('');
 
-  //1. Chargement initial
+  //1. Chargement initial de la liste de courses
   useEffect(() => {
     // Dès que le composant est chargé, on appelle le back-end
     api.get('/articles')
@@ -17,7 +17,7 @@ const Articles = () => {
         setLoading(false);
       })
       .catch(err => {
-        console.error("Erreur chargement:", err);
+        console.error("Erreur lors du chargement de la liste des courses :", err);
         setLoading(false);
       }); 
   }, []);
@@ -36,9 +36,9 @@ const Articles = () => {
       
       // Mise à jour de l'état local : on ajoute le nouvel article créé à la liste
       setArticles([...articles, res.data]);
-      setNomNouvelArticle(''); // On vide le champ de saisie
+      setNomNouvelArticle(''); // On vide le champs de saisie
     } catch (err) {
-      console.error("Erreur lors de la création :", err);
+      console.error("Erreur lors de la création de l'article :", err);
     }
   };
 
@@ -51,7 +51,7 @@ const Articles = () => {
       // mise à jour de l'état local React pour éviter de recharger la page
       setArticles(articles.map(art => art.id === id ? { ...art, statut: !currentStatut } : art));
     } catch (err) {
-      console.error("Erreur lors de la mise à jour :", err);
+      console.error("Erreur lors de la mise à jour de l'article :", err);
     }
   };
 
@@ -63,7 +63,7 @@ const Articles = () => {
         // On filtre l'état local pour enlever l'article supprimé
         setArticles(articles.filter(art => art.id !== id));
       } catch (err) {
-        console.error("Erreur lors de la suppression :", err);
+        console.error("Erreur lors de la suppression de l'article :", err);
       }
     }
   };

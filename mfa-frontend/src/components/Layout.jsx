@@ -13,6 +13,7 @@ const Layout = () => {
     <div>
       <nav className="navbar navbar-dark bg-primary p-3">
         <span className="navbar-brand">MyFamilyAppli</span>
+        <button className="btn btn-outline-light" onClick={() => navigate('/')}>🏠 Tableau de bord</button>
         <button className="btn btn-outline-light" onClick={handleLogout}>Déconnexion</button>
       </nav>
       
@@ -22,10 +23,10 @@ const Layout = () => {
       </main>
       
       {/* Footer navigation simple */}
-      <footer className="fixed-bottom bg-light p-2 border-top text-center">
-        <button className="btn btn-link" onClick={() => navigate('/items')}>Todo List</button>
-        <button className="btn btn-link" onClick={() => navigate('/articles')}>Courses</button>
-        <button className="btn btn-link" onClick={() => navigate('/events')}>Calendrier</button>
+      <footer className="fixed-bottom bg-light p-2 mt-3 border-top text-center d-flex justify-content-around">
+        <button className="btn btn-link text-decoration-none" onClick={() => navigate('/items')}>📝 Todo List</button>
+        <button className="btn btn-link text-decoration-none" onClick={() => navigate('/articles')}>🛒 Courses</button>
+        <button className="btn btn-link text-decoration-none" onClick={() => navigate('/events')}>📅 Calendrier</button>
       </footer>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
       localStorage.setItem('token', reponse.data.token);
       
       // On redirige vers le futur tableau de bord
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setErreur("Identifiants incorrects. Veuillez réessayer.");
     }
@@ -58,6 +58,11 @@ const Login = () => {
           </div>
           <button type="submit" className="btn btn-primary w-100">Se connecter</button>
         </form>
+        <div className="text-center mt-3">
+          <p className="small text-muted">
+            Nouvelle famille ? <Link to="/register">Créez votre espace ici</Link>
+          </p>
+        </div>  
       </div>
     </div>
   );
