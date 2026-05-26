@@ -4,8 +4,8 @@ import api from '../services/api';
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    todosCount: 0,
-    urgentTodosCount: 0,
+    itemsCount: 0,
+    urgentitemsCount: 0,
     articlesCount: 0,
     nextEvent: null
   });
@@ -19,14 +19,14 @@ const Dashboard = () => {
       api.get('/articles'),
       api.get('/events')
     ])
-    .then(([todosRes, articlesRes, eventsRes]) => {
-      const todos = todosRes.data.TodoItems || [];
+    .then(([itemsRes, articlesRes, eventsRes]) => {
+      const items = itemsRes.data.TodoItems || [];
       const articles = articlesRes.data.Articles || [];
       const events = eventsRes.data.Events || [];
 
       // 1. Filtrage des tâches actives (non terminées)
-      const activeTodos = todos.filter(t => t.statut !== 'termine');
-      const urgentTodos = activeTodos.filter(t => t.priorite === true);
+      const activeItems = items.filter(i => i.statut !== 'termine');
+      const urgentItems = activeItems.filter(i => i.priorite === true);
 
       // 2. Filtrage des articles restant à acheter
       const activeArticles = articles.filter(a => a.statut === true);
@@ -38,8 +38,8 @@ const Dashboard = () => {
         .sort((a, b) => new Date(a.dateDebut) - new Date(b.dateDebut)); // Tri chronologique
         // attention ! fonction filter retourne un TABLEAU
       setStats({
-        todosCount: activeTodos.length,
-        urgentTodosCount: urgentTodos.length,
+        itemsCount: activeItems.length,
+        urgentItemsCount: urgentItems.length,
         articlesCount: activeArticles.length,
         nextEvent: futursEvents.length > 0 ? futursEvents[0] : null 
       });
@@ -71,12 +71,12 @@ const Dashboard = () => {
             <div className="card-body">
               <h5 className="card-title text-muted small uppercase fw-bold">📝 Tâches en cours</h5>
               <div className="d-flex align-items-baseline gap-2 mt-2">
-                <span className="fs-1 fw-bold text-dark">{stats.todosCount}</span>
+                <span className="fs-1 fw-bold text-dark">{stats.itemsCount}</span>
                 <span className="text-muted small">actives</span>
               </div>
-              {stats.urgentTodosCount > 0 && (
+              {stats.urgentItemsCount > 0 && (
                 <div className="alert alert-danger py-1 px-2 mt-2 small mb-0">
-                  ⚠️ {stats.urgentTodosCount} tâche(s) avec priorité critique !
+                  ⚠️ {stats.urgentItemsCount} tâche(s) avec priorité critique !
                 </div>
               )}
             </div>

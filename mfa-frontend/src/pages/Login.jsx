@@ -37,8 +37,9 @@ const Login = () => {
         
         <form onSubmit={handleSubmit} className="card p-4 shadow-sm">
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label htmlFor="email" className="form-label">Email</label>
             <input
+              id="email"
               type="email"
               className="form-control"
               value={email}
@@ -47,8 +48,9 @@ const Login = () => {
             />
           </div>
           <div className="mb-3">
-            <label className="form-label">Mot de passe</label>
+            <label htmlFor="password" className="form-label">Mot de passe</label>
             <input
+              id="password"
               type="password"
               className="form-control"
               value={password}
