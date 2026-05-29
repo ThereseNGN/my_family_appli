@@ -1,20 +1,13 @@
-const { Family, User, TodoList, ShoppingList, Calendar } = require('../models');
-const { validationResult } = require('express-validator');
+const authRepository = require('../repositories/authRepository');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.registerUser = async (currentRequest, currentResponse) => {
-  // 1. Récupération des erreurs d'Express-Validator
-  const errors = validationResult(currentRequest);
-  if (!errors.isEmpty()) {
-    return currentResponse.status(400).json({ errors: errors.array() });
-  }
-
   try {
     const { nom, prenom, email, password, role, familyId } = currentRequest.body;
 
     // 2. Vérification de l'existence de l'utilisateur
-    const userExists = await User.findOne({ where: { email } });
+    const userExists = await authRepository.findUserByEmail(email);
     if (userExists) {
       return currentResponse.status(400).json({ message: "Cet email est déjà utilisé." });
     }
@@ -27,22 +20,18 @@ exports.registerUser = async (currentRequest, currentResponse) => {
     // 4. Création ou Rejoindre la Famille
     if (!targetFamilyId) {
       // CAS 1 : Premier membre, on crée la famille et SES listes uniques
-      const newFamily = await Family.create({ nom: nom });
+      const newFamily = await authRepository.createFamilyWithLists(nom);
       targetFamilyId = newFamily.id;
-      // 4b. Création AUTOMATIQUE de sa TodoList, sa ShoppingList et son Calendar (Contrainte 1-1)
-      await TodoList.create({ familyId: targetFamilyId, nom: `To-do List de la famille ${nom}` });
-      await ShoppingList.create({ familyId: targetFamilyId, nom: `Liste de courses de la famille ${nom}` });
-      await Calendar.create({ familyId: targetFamilyId, nom: `Calendrier de la famille ${nom}` });
     } else {
       // CAS 2 : Le membre rejoint, on vérifie que la famille existe
-      const existingFamily = await Family.findByPk(targetFamilyId);
+      const existingFamily = await authRepository.findFamilyById(targetFamilyId);
       if (!existingFamily) {
         return currentResponse.status(404).json({ message: "La famille spécifiée n'existe pas." });
       }
     }    
 
     // 5. Création de l'Utilisateur lié à cette famille (targetFamilyId)
-    const newUser = await User.create({
+    const newUser = await authRepository.createUser({
       prenom,
       email,
       password: hashedPassword,
@@ -78,7 +67,7 @@ exports.loginUser = async (currentRequest, currentResponse) => {
     }
 
     // 2. Recherche de l'utilisateur par son email
-    const user = await User.findOne({ where: { email } });
+    const user = await authRepository.findUserByEmail(email);
     if (!user) {
       // Message générique par sécurité (on ne dit pas si c'est l'email ou le mdp qui est faux)
       return currentResponse.status(401).json({ message: "Identifiants incorrects." });
