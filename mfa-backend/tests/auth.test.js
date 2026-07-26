@@ -30,21 +30,6 @@ describe('API Authentification', () => {
     expect(res.body.user).toHaveProperty('email', 'admin@test.com');
   });
 
-  it('Devrait refuser une inscription avec un email non valide', async () => {
-    const res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        nom: 'FailFamily',
-        prenom: 'Fail',
-        email: 'invalid-email',
-        password: 'Password123!',
-        role: 'user'
-      });
-
-    expect(res.statusCode).toEqual(400);
-    expect(res.body).toHaveProperty('errors');
-  });
-
   it('Devrait refuser une inscription avec un mot de passe trop court', async () => {
     const res = await request(app)
       .post('/api/auth/register')
@@ -53,6 +38,21 @@ describe('API Authentification', () => {
         prenom: 'Fail',
         email: 'short.password@test.com',
         password: '123!',
+        role: 'user'
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('errors');
+  });
+  
+  it('Devrait refuser une inscription avec un email non valide', async () => {
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({
+        nom: 'FailFamily',
+        prenom: 'Fail',
+        email: 'invalid-email',
+        password: 'Password123!',
         role: 'user'
       });
 
