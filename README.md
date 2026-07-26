@@ -52,9 +52,9 @@ L'application est entièrement conteneurisée pour garantir un déploiement flui
 3. Lancez la commande suivante :
    ```bash
    docker-compose up --build -d
-   Une fois l'orchestration termiée, l'application MyFamilyAppli est accessible via un navigateur : http://localhost:5173
+   Une fois l'orchestration terminée, l'application MyFamilyAppli est accessible via un navigateur : http://localhost:5173
 
-4. Pour stopper les conteneurs (sans perte de données car elles sont persistées dans un volule Docker) :
+4. Pour stopper les conteneurs (sans perte de données car elles sont persistées dans un volume Docker) :
    ```bash
    docker-compose down
    ```

@@ -58,7 +58,7 @@ describe('API To-do List (Sécurisée)', () => {
       .send({
         intitule: 'Réserver billets de train',
         description: 'A-R Lyon/Paris',
-        deadline: '2026-07-15',
+        deadline: '2026-09-15',
         priorite: false,
         statut: 'a_faire'
       });
@@ -67,4 +67,36 @@ describe('API To-do List (Sécurisée)', () => {
     expect(res.body).toHaveProperty('id');
     expect(res.body).toHaveProperty('intitule', 'Réserver billets de train');
   });
+
+  it('Devrait refuser la création d\'une tâche sans intitulé', async () => {
+    const res = await request(app)
+      .post('/api/items')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({
+        description: 'Pas d\'intitulé',
+        deadline: '2026-09-15',
+        priorite: false,
+        statut: 'a_faire'
+      });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toHaveProperty('errors');
+    expect(res.body.errors[0].msg).toBe('L\'intitulé est obligatoire.');
+  });
+
+  it('Devrait supprimer une tâche existante', async () => {
+    const item = await request(app)
+      .post('/api/items')
+      .set('Authorization', `Bearer ${authToken}`)
+      .send({ intitule: 'Tâche à supprimer', statut: 'a_faire' });
+
+    const res = await request(app)
+      .delete(`/api/items/${item.body.id}`)
+      .set('Authorization', `Bearer ${authToken}`);
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('message', 'Tâche supprimée avec succès.');
+  });
+
+
 });

@@ -44,6 +44,12 @@ const Events = () => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     if (!intituleNouvelEvent.trim() || !dateDebutNouvelEvent || !dateFinNouvelEvent) return;
+    if (new Date(dateFinNouvelEvent) < new Date(dateDebutNouvelEvent)) {
+    // Si tu utilises toastify :
+    // toast.error("La date de fin ne peut pas être antérieure à la date de début.");
+    alert("La date de fin ne peut pas être antérieure à la date de début.");
+    return; // Bloque la soumission
+    }
 
     try {
       // Envoi au Back-end
