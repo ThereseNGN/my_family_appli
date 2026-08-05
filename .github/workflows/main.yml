@@ -41,9 +41,6 @@ jobs:
         run: |
           cd mfa-backend
           npm ci
-      - name: Attente MySQL
-        run: |
-          sleep 20
           npm test
 
   # --- PHASE 2 : DÉPLOIEMENT CONTINU (CD) ---
