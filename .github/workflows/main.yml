@@ -1,0 +1,42 @@
+name: Pipeline CI/CD MyFamilyAppli
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # --- PHASE 1 : INTÉGRATION CONTINUE (CI) ---
+  ci-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Tests automatisés Backend (Jest)
+        run: |
+          cd mfa-backend
+          npm ci
+          npm test
+
+  # --- PHASE 2 : DÉPLOIEMENT CONTINU (CD) ---
+  cd-deployment:
+    needs: ci-testing
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Déploiement automatique sur VPS OVH (Debian 12) via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_IP }}
+          username: debian
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/my_family_appli
+            git pull origin main
+            docker compose -f docker-compose.prod.yml up -d --build
+            docker image prune -f
