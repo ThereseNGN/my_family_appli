@@ -2,7 +2,7 @@ name: Pipeline CI/CD MyFamilyAppli
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   # --- PHASE 1 : INTÉGRATION CONTINUE (CI) ---
@@ -27,7 +27,7 @@ jobs:
       - name: Configuration de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Tests automatisés Backend (Jest)
         env:
@@ -58,5 +58,6 @@ jobs:
           script: |
             cd /var/www/my_family_appli
             git pull origin main
-            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml build --no-cache
+            docker compose -f docker-compose.prod.yml up -d --force-recreate
             docker image prune -f
