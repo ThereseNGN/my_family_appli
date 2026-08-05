@@ -8,6 +8,18 @@ jobs:
   # --- PHASE 1 : INTÉGRATION CONTINUE (CI) ---
   ci-testing:
     runs-on: ubuntu-latest
+
+    # Service MySQL éphémère pour exécuter les tests Jest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: myfamilyapp_test_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
       - name: Récupération du code
         uses: actions/checkout@v4
@@ -18,9 +30,20 @@ jobs:
           node-version: '20'
 
       - name: Tests automatisés Backend (Jest)
+        env:
+          NODE_ENV: test
+          JWT_SECRET: KeyTestGithubActionsSecret2026
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: myfamilyapp_test_db
         run: |
           cd mfa-backend
           npm ci
+      - name: Attente MySQL
+        run: |
+          sleep 20
           npm test
 
   # --- PHASE 2 : DÉPLOIEMENT CONTINU (CD) ---
