@@ -1,31 +1,36 @@
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // URL du serveur Node.js/Docker
+  baseURL: "/api", // En prod, Nginx interceptera '/api' et le redirigera vers 'backend:5000'
 });
 
 // MIDDLEWARE FRONT : Intercepte chaque requête sortante pour lui greffer le Token s'il existe
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token'); // Le navigateur cherchera le badge ici
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token"); // Le navigateur cherchera le badge ici
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 // 2. Intercepteur de RÉPONSE : Gère les erreurs entrantes de manière globale
 api.interceptors.response.use(
   (response) => {
     // Si la requête réussit (code 2xx), on laisse passer la réponse
-    return response; 
+    return response;
   },
   (error) => {
     // Si le serveur est totalement injoignable (éteint ou planté)
     if (!error.response) {
-      toast.error("Impossible de contacter le serveur. Veuillez vérifier votre connexion.");
+      toast.error(
+        "Impossible de contacter le serveur. Veuillez vérifier votre connexion.",
+      );
       return Promise.reject(error);
     }
 
@@ -35,18 +40,20 @@ api.interceptors.response.use(
     switch (status) {
       case 401:
         // 401 : Token expiré ou absent
-        toast.warning("Votre session a expiré ou est invalide. Redirection en cours...");
-        localStorage.removeItem('token');
+        toast.warning(
+          "Votre session a expiré ou est invalide. Redirection en cours...",
+        );
+        localStorage.removeItem("token");
         // Redirection après 4sec vers le login
         setTimeout(() => {
-          window.location.href = '/login'; 
-        }, 3000);  
+          window.location.href = "/login";
+        }, 3000);
         break;
-      
+
       case 403:
         toast.error("Vous n'avez pas l'autorisation d'effectuer cette action.");
         break;
-        
+
       case 404:
         // Optionnel : ne rien faire globalement pour les 404, ou afficher une info
         break;
@@ -64,7 +71,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
